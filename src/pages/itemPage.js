@@ -1,9 +1,6 @@
 import React from "react";
-import {Container, Grid, Typography} from "@material-ui/core";
-import Avatar from '@material-ui/core/Avatar';
-import {makeStyles} from "@material-ui/core/styles";
+import {Container, Grid, Typography, Avatar, makeStyles, Chip} from "@material-ui/core";
 import {useSelector} from "react-redux";
-import Chip from "@material-ui/core/Chip";
 import Loader from "../components/loading/loading";
 import AppError from "../components/app-error";
 

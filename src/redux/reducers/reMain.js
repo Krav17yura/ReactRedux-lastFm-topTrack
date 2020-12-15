@@ -15,10 +15,9 @@ const reMain = (state = {
                 }
             }
         case 'SET_DATA':
-            const data = action.payload.tracks.track
             return {
                 ...state,
-                data
+                data: action.payload
             }
         case  'SET_DATA_ERROR':
             return {

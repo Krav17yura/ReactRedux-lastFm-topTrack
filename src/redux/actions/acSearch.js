@@ -1,3 +1,6 @@
+import transformTracks from "../../helpers/transformTracks";
+const accessKey = process.env.REACT_APP_UNSPLASH_ACCESS_KEY;
+
 export const setTrackData = (data) => {
     return {
         type: 'SET_SEARCH_TRACK_DATA',
@@ -21,11 +24,11 @@ export const setSearchTrackDataError = (value) => {
 
 export const fetchSearchTrack = (name) => dispatch => {
     dispatch(isLoadedSearchTrackData(false))
-    fetch(`http://ws.audioscrobbler.com/2.0/?method=track.search&track=${name}&api_key=83f51b9c2cd20c7b7f1a21f514e5c624&format=json&limit=200`)
+    fetch(`http://ws.audioscrobbler.com/2.0/?method=track.search&track=${name}&api_key=${accessKey}&format=json&limit=200`)
         .then(res => res.json())
         .catch(e => dispatch(setSearchTrackDataError(false)))
         .then(data => {
-            dispatch(setTrackData(data))
+            dispatch(setTrackData(transformTracks(data.results.trackmatches.track)))
         })
         .finally(() => dispatch(isLoadedSearchTrackData(true)))
 }

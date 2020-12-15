@@ -13,10 +13,9 @@ const reSearch = (state = {
                 searchInputValue: action.payload
             }
         case "SET_SEARCH_TRACK_DATA":
-            const trackData = action.payload.results.trackmatches.track
             return {
                 ...state,
-                trackData
+                trackData:action.payload
             }
         case "SET_SEARCH_TRACK_DATA_ERROR":
             return {

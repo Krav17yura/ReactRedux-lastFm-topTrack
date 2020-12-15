@@ -1,55 +1,44 @@
-import React, {useEffect, useState} from "react";
-import {Container, Grid} from "@material-ui/core";
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from "@material-ui/core/FormControl";
-import {makeStyles} from "@material-ui/core/styles";
+import React, {useEffect} from "react";
+import {Container, Grid, OutlinedInput, InputLabel, FormControl, makeStyles, Button} from "@material-ui/core";
+import {Pagination} from "@material-ui/lab";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchSearchTrack, setSearchInputValue} from "../redux/actions/acSearch";
-import Button from "@material-ui/core/Button";
-import {Pagination} from "@material-ui/lab";
-import Item from "../components/item";
-import {v4 as uuidv4} from 'uuid'
 import {fetchArtistData} from "../redux/actions/acArtist";
+import Item from "../components/item";
 import Loader from "../components/loading/loading";
 import AppError from "../components/app-error";
-import Typography from "@material-ui/core/Typography";
+import {v4 as uuidv4} from 'uuid'
 
-const useStyle = makeStyles((theme) => ({
-    form: {
-        marginTop: theme.spacing(2)
-    },
-    btn: {
+const useStyle = makeStyles(() => ({
+    mrgTop: {
         marginTop: 10
     },
     pagination: {
         margin: 10
     },
-    itemGrid: {
-        marginTop: 10
-    }
-
 }))
 
 const SearchItem = () => {
     const dispatch = useDispatch();
     const inputValue = useSelector((state) => state.reSearch.searchInputValue)
     const trackData = useSelector((state) => state.reSearch.trackData)
-    const isLoading = useSelector((state) => state.reSearch.trackDataStatus.isLoaded)
-    const isError = useSelector((state) => state.reSearch.trackDataStatus.isError)
+    const {isLoaded, isError} = useSelector(({reSearch}) => reSearch.trackDataStatus)
+
+
     const classes = useStyle()
+
 
     const [currentPage, setCurrentPage] = React.useState(1);
     const [contactsPerPage] = React.useState(12)
     const [currentPost, setCurrentPost] = React.useState([])
     const [pageNumber, setPageNumber] = React.useState(1)
+    const indexOfLastPost = currentPage * contactsPerPage;
+    const indexOfFirstPost = indexOfLastPost - contactsPerPage
 
     useEffect(() => {
-        const indexOfLastPost = currentPage * contactsPerPage;
-        const indexOfFirstPost = indexOfLastPost - contactsPerPage
         setCurrentPost(trackData.slice(indexOfFirstPost, indexOfLastPost))
         setPageNumber(Math.ceil(trackData.length / contactsPerPage))
-    }, [trackData, currentPage])
+    }, [trackData, currentPage, contactsPerPage, indexOfLastPost, indexOfFirstPost])
 
 
     const handleChange = (event, value) => {
@@ -60,8 +49,8 @@ const SearchItem = () => {
         dispatch(setSearchInputValue(value))
     }
     const onSearchTrack = (event) => {
-        dispatch(fetchSearchTrack(inputValue))
         event.preventDefault()
+        dispatch(fetchSearchTrack(inputValue))
     }
 
     const getArtistData = (name, id) => {
@@ -70,9 +59,8 @@ const SearchItem = () => {
 
     return (
         <Container>
-
             <form onSubmit={onSearchTrack}>
-                <FormControl fullWidth variant="outlined" className={classes.form}>
+                <FormControl fullWidth variant="outlined" className={classes.mrgTop}>
                     <InputLabel htmlFor="outlined-adornment-amount">Search </InputLabel>
                     <OutlinedInput
                         value={inputValue}
@@ -81,23 +69,22 @@ const SearchItem = () => {
                         labelWidth={60}
                         required
                     />
-                    <Button variant="contained" color="primary" className={classes.btn} type={"submit"}>
+                    <Button variant="contained" color="primary" className={classes.mrgTop} type={"submit"}>
                         Primary
                     </Button>
                 </FormControl>
             </form>
             {isError ? <>
-                {isLoading ? <>
+                {isLoaded ? <>
                     <Grid container direction={"row"} justify="space-between" alignItems="center"
-                          className={classes.itemGrid}>
-
+                          className={classes.mrgTop}>
                         {
                             currentPost.map(obj => (
                                 <Item
                                     key={uuidv4()}
                                     artistName={obj.artist}
                                     musicName={obj.name}
-                                    img={obj.image[2]['#text']}
+                                    img={obj.image}
                                     url={obj.url}
                                     artistID={obj.mbid}
                                     getArtistData={getArtistData}

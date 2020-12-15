@@ -1,6 +1,5 @@
 import React from "react";
-import {Container} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import {Container, makeStyles} from "@material-ui/core";
 import ItemList from "../components/item-list";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,9 +11,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
     const classes = useStyles();
-    return(
+    return (
         <Container className={classes.root} maxWidth={"lg"}>
-                 <ItemList/>
+            <ItemList/>
         </Container>
     )
 }
